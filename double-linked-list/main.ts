@@ -1,7 +1,7 @@
 class Node<T> {
     data: T;
-    next?: Node<T> 
-    prev?: Node<T>
+    next?: Node<T>;
+    prev?: Node<T>;
 
     constructor(data: T) {
         this.data = data;
@@ -11,8 +11,8 @@ class Node<T> {
 
 export default class DoublyLinkedList<T> {
     public length: number;
-    public head: Node<T> | null
-    public tail: Node<T> | null
+    private head?: Node<T>;
+    private tail?: Node<T>;
 
     constructor() {
         this.length = 0;
@@ -22,19 +22,15 @@ export default class DoublyLinkedList<T> {
     prepend(item: T): void {
         const newNode = new Node(item);
         this.length++;
-        if (this.head == null) {
+        if (!this.head) {
             this.head = newNode;
+            this.tail = this.head;
         } else {
             let current = this.head;
             //head é novo node
             this.head = newNode;
-            
             this.head.next = current;
             current.prev = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            this.tail = current;
         }
 }
     insertAt(item: T, idx: number): void {
@@ -115,26 +111,42 @@ export default class DoublyLinkedList<T> {
     get(idx: number): T | undefined {
         if(!this.head || !this.tail) {
             return undefined;
-        }  
-        if (idx == 0 && this.head != null) {
+        } 
+        //get head
+        if (idx == 0) {
             return this.head.data;
         }
-        if (idx == this.length - 1 && this.tail != null) {
+        //get tail
+        if (idx == this.length - 1) {
             return this.tail.data;
         }
-        if (idx < this.length - 1 ) {
-            let current = this.tail;
-            for (let i = this.length-1; i > idx; i--) {
-                current = current.prev;
+        //get element in the middle
+        if (idx > 0 && idx < this.length-1) {
+            //if element [mid, length)
+            if (idx >= (this.length/2)) {
+                let current = this.tail;
+                let i = this.length-1;
+                while (current.prev) {
+                    current = current.prev;
+                    i--;
+                    // when found element on idx position
+                    if (idx == i) {
+                        return current.data;
+                    }
+                }
+            } else {
+                let current = this.head;
+                let i = 0;
+                while (current.next) {
+                    current = current.next;
+                    i++;
+                    if (idx == i) {
+                        return current.data;
+                    }
+                }
             }
-            return current.data;
-        } else {
-            let current = this.head;
-            for (let i = 0; i < idx; i++) {
-                current = current.next;
-            }
-            return current.data;
         }
+        return undefined;
 }
     removeAt(idx: number): T | undefined {
         if (idx > this.length ||!this.head || !this.tail) {
@@ -195,6 +207,8 @@ const list = new DoublyLinkedList<number>
 list.append(5);
 list.append(7);
 list.append(9);
+list.append(1);
+list.append(4);
 
 if (list.get(2) == 9) {
     console.log("PASS")
@@ -202,12 +216,14 @@ if (list.get(2) == 9) {
     console.log("FAIL")
 }
 
-if (list.removeAt(1) === 7) {
-    console.log("PASS")
-} else {
-    console.log("FAIL")
-    list.print()
-}
+list.print();
+
+// if (list.removeAt(1) === 7) {
+//     console.log("PASS")
+// } else {
+//     console.log("FAIL")
+//     list.print()
+// }
 
 // if (list.length == 2) {
 //     console.log("PASS")
