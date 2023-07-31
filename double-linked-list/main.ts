@@ -1,12 +1,11 @@
 class Node<T> {
     data: T;
-    next: Node<T> | null;
-    prev: Node<T> | null;
+    next?: Node<T> 
+    prev?: Node<T>
 
     constructor(data: T) {
         this.data = data;
-        this.next = null;
-        this.prev = null;
+        this.next = this.prev = undefined;
     }
 }
 
@@ -17,8 +16,7 @@ export default class DoublyLinkedList<T> {
 
     constructor() {
         this.length = 0;
-        this.head = null;
-        this.tail = this.head;
+        this.head = this.tail = undefined;
     }
 
     prepend(item: T): void {
