@@ -70,32 +70,43 @@ export default class DoublyLinkedList<T> {
 
 }
     remove(item: T): T | undefined {
-        if (this.head == null) {
+        if (!this.head) {
             return undefined;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                if (current.data == item) {
-                    let n = current.next;
-                    let p = current.prev;
-                    n.prev = p
-                    p.next = n
-                    if (current.prev == null) {
-                        //se current for o head
-                        this.head = n;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.data == item) {
+                // remove head node
+                if (!current.prev ) {
+                    if (this.length == 1) {
+                        // if list constains one element.
+                        this.head = this.tail = undefined;
+                        this.length--;
+                        return current.data;
                     }
-                    if (current.next == null) {
-                        //se current for o tail
-                        this.tail = p;
-                    }
-                    current.next = null;
-                    current.prev = null;
+                    this.head = current.next;
+                    current.next = undefined;
+                    this.length--;
+                    return current.data;
+                } else if (!current.next) {
+                    // remove tail node
+                    this.tail = current.prev;
+                    current.prev = undefined;
+                    this.length--;
+                    return current.data;
+                } else {
+                    // remove middle node
+                    current.prev.next = current.next;
+                    current.next.prev = current.prev;
+                    current.next = current.prev = undefined;
                     this.length--;
                     return current.data;
                 }
-                current = current.next;
             }
+            current = current.next;
         }
+        // if do not find node
         return undefined;
 }
     get(idx: number): T | undefined {
@@ -144,62 +155,55 @@ export default class DoublyLinkedList<T> {
         if (!this.head || idx >= this.length) {
             return undefined;
         }
-
-        // remove head
-        if (idx == 0) {
-            let current = this.head;
-            this.head = current.next;
-            this.head.prev = undefined;
-            return current.data;
-        }
-
-        // remove tail
-        if (idx == this.length - 1) {
+        
+        if (idx >= this.length/2) {
             let current = this.tail;
-            this.tail = current.prev;
-            this.tail.next = undefined;
-            return current.data;
-        }
-
-        // remove middle element
-        if (idx > this.length / 2) {
-            // if idx between (mid, this.length-2]
-            let current = this.tail.prev;
-            let i = this.length - 2;
+            let i = this.length-1;
             while (current.prev) {
                 if (idx == i) {
+                    if (idx == this.length - 1) {
+                        this.tail = current.prev;
+                        current.prev = this.tail.next = undefined;
+                        this.length--;
+                        return current.data
+                    }
                     current.prev.next = current.next;
                     current.next.prev = current.prev;
                     current.next = current.prev = undefined;
+                    this.length--;
                     return current.data;
                 }
-                if (i <= this.length/2) {
+                if (i < this.length/2) {
                     break;
                 }
                 current = current.prev;
                 i--;
             }
-            return undefined;
         } else {
-            // if idx between[1, mid]
-            let current = this.head.next;
-            let i = 1;
+            let current = this.head;
+            let i = 0;
             while (current.next) {
                 if (idx == i) {
+                    if (idx == 0) {
+                        this.head = current.next;
+                        current.next = this.head.prev = undefined;
+                        this.length--;
+                        return current.data;
+                    }
                     current.prev.next = current.next;
                     current.next.prev = current.prev;
                     current.next = current.prev = undefined;
-                    return current.data;
+                    this.length--;
+                    return current.data;   
                 }
-
-                if (i > this.length/2) {
+                if (i >= this.length/2) {
                     break;
                 }
                 current = current.next;
                 i++;
             }
-            return undefined;
         }
+        return undefined;
 }
 
 print(): void {
@@ -224,79 +228,80 @@ if (list.get(2) == 9) {
 }
 
 
-if (list.removeAt(10) === undefined) {
+if (list.removeAt(1) === 7) {
     console.log("PASS")
 } else {
     console.log("FAIL")
     list.print()
 }
 
-// if (list.length == 2) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-//     console.log(list.length)
-// }
+if (list.length == 4) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+    console.log(list.length)
+}
 
-// list.append(11);
-// if (list.removeAt(1) == 9) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-// }
+list.append(11);
+if (list.removeAt(1) == 9) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+}
 
-// if (list.removeAt(9) === undefined) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-// }
+if (list.removeAt(9) === undefined) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+}
 
-// if (list.removeAt(0) === 5) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-// }
+if (list.removeAt(0) === 5) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+}
 
-// if (list.removeAt(0) === 11) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-// }
 
-// if (list.length == 0) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-// }
-// list.prepend(5)
-// list.prepend(7)
-// list.prepend(9)
+if (list.removeAt(list.length-1) === 11) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+}
 
-// if (list.get(0) == 9 && list.get(2) == 5) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-// }
+if (list.length == 2) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+}
+list.prepend(5)
+list.prepend(7)
+list.prepend(9)
+list.print()
+if (list.get(0) == 9 && list.get(2) == 5) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+}
 
 // // list.print()
 
-// if (list.remove(9) == 9) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-// }
+if (list.remove(9) == 9) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+}
 
-// if (list.length == 2) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-//     console.log(list.length)
-// }
+if (list.length == 4) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+    console.log(list.length)
+}
 
-// if (list.get(0) == 7) {
-//     console.log("PASS")
-// } else {
-//     console.log("FAIL")
-// }
+if (list.get(0) == 7) {
+    console.log("PASS")
+} else {
+    console.log("FAIL")
+}
 
-// console.log("PASSED ALL ?")
+console.log("PASSED ALL ?")
