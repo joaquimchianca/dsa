@@ -18,3 +18,6 @@ tsc main.ts
 node main.js
 ```
 
+## Testing
+For tests, just use the implemented methods for each data structure above the implementation. See Linked List source file
+for an example.
