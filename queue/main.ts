@@ -10,8 +10,8 @@ class Node<T> {
 
 export default class Queue<T> {
     public length: number;
-    private head: Node<T>;
-    private tail: Node<T>;
+    private head?: Node<T>;
+    private tail?: Node<T>;
     
 
     constructor() {
@@ -20,17 +20,16 @@ export default class Queue<T> {
     }
 
     enqueue(item: T): void {
-        const newNode = new Node(item);
+        const newNode = {value: item} as Node<T>;
         this.length++;
-        if (!this.head) {
+        if (!this.tail || !this.head) {
             // if queue empty
-            this.head = this.tail = newNode;
-        } else {
-            // if not
-            let current = this.tail;
-            this.tail = newNode;
-            current.next = this.tail;
-        }
+            this.head = this.tail = newNode
+            return;
+        } 
+
+        this.tail.next = newNode;
+        this.tail = newNode;
 
 }
     deque(): T | undefined {
@@ -44,9 +43,6 @@ export default class Queue<T> {
         return current.value;
 }
     peek(): T | undefined {
-        if (this.head) {
-            return this.head.value;
-        }
-        return undefined;
+        return this.head?.value;
 }
 }
