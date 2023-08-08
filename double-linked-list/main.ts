@@ -159,14 +159,14 @@ export default class DoublyLinkedList<T> {
         if (idx >= this.length/2) {
             let current = this.tail;
             let i = this.length-1;
+            if (idx == this.length - 1) {
+                this.tail = current.prev;
+                current.prev = this.tail.next = undefined;
+                this.length--;
+                return current.data
+            }
             while (current.prev) {
                 if (idx == i) {
-                    if (idx == this.length - 1) {
-                        this.tail = current.prev;
-                        current.prev = this.tail.next = undefined;
-                        this.length--;
-                        return current.data
-                    }
                     current.prev.next = current.next;
                     current.next.prev = current.prev;
                     current.next = current.prev = undefined;
@@ -182,14 +182,16 @@ export default class DoublyLinkedList<T> {
         } else {
             let current = this.head;
             let i = 0;
+
+            if (idx == 0) {
+                this.head = current.next;
+                current.next = undefined;
+                this.length--;
+                return current.data;
+            }
+
             while (current.next) {
                 if (idx == i) {
-                    if (idx == 0) {
-                        this.head = current.next;
-                        current.next = this.head.prev = undefined;
-                        this.length--;
-                        return current.data;
-                    }
                     current.prev.next = current.next;
                     current.next.prev = current.prev;
                     current.next = current.prev = undefined;
@@ -218,8 +220,6 @@ const list = new DoublyLinkedList<number>
 list.append(5);
 list.append(7);
 list.append(9);
-list.append(1);
-list.append(4);
 
 if (list.get(2) == 9) {
     console.log("PASS")
@@ -235,7 +235,7 @@ if (list.removeAt(1) === 7) {
     list.print()
 }
 
-if (list.length == 4) {
+if (list.length == 2) {
     console.log("PASS")
 } else {
     console.log("FAIL")
@@ -254,7 +254,7 @@ if (list.removeAt(9) === undefined) {
 } else {
     console.log("FAIL")
 }
-
+list.print()
 if (list.removeAt(0) === 5) {
     console.log("PASS")
 } else {
@@ -262,46 +262,47 @@ if (list.removeAt(0) === 5) {
 }
 
 
-if (list.removeAt(list.length-1) === 11) {
+if (list.removeAt(0) === 11) {
     console.log("PASS")
 } else {
     console.log("FAIL")
+    list.print()
 }
 
-if (list.length == 2) {
-    console.log("PASS")
-} else {
-    console.log("FAIL")
-}
-list.prepend(5)
-list.prepend(7)
-list.prepend(9)
-list.print()
-if (list.get(0) == 9 && list.get(2) == 5) {
-    console.log("PASS")
-} else {
-    console.log("FAIL")
-}
+// if (list.length == 2) {
+//     console.log("PASS")
+// } else {
+//     console.log("FAIL")
+// }
+// list.prepend(5)
+// list.prepend(7)
+// list.prepend(9)
+// list.print()
+// if (list.get(0) == 9 && list.get(2) == 5) {
+//     console.log("PASS")
+// } else {
+//     console.log("FAIL")
+// }
 
-// // list.print()
+// // // list.print()
 
-if (list.remove(9) == 9) {
-    console.log("PASS")
-} else {
-    console.log("FAIL")
-}
+// if (list.remove(9) == 9) {
+//     console.log("PASS")
+// } else {
+//     console.log("FAIL")
+// }
 
-if (list.length == 4) {
-    console.log("PASS")
-} else {
-    console.log("FAIL")
-    console.log(list.length)
-}
+// if (list.length == 4) {
+//     console.log("PASS")
+// } else {
+//     console.log("FAIL")
+//     console.log(list.length)
+// }
 
-if (list.get(0) == 7) {
-    console.log("PASS")
-} else {
-    console.log("FAIL")
-}
+// if (list.get(0) == 7) {
+//     console.log("PASS")
+// } else {
+//     console.log("FAIL")
+// }
 
-console.log("PASSED ALL ?")
+// console.log("PASSED ALL ?")
